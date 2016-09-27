@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <style>
+        body{
+            position: relative;
+        }
+        #section1 {padding-top:50px;
+            color: #F25432;
+            background-color: #9595ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="section1" align="center">
+    <form method="post" role="form"> {% csrf_token %}
+        <div class="form-group" >
+            {{ form.username.errors }}
+            {{ form.username.label_tag }}
+            {{ form.username }}
+        </div>
+        <div class="form-group">
+            {{ form.password.errors }}
+            {{ form.password.label_tag }}
+            {{ form.password }}
+        </div>
+        <input type="submit" value="Login"/>
+    </form>
+        </div>
+</body>
+</html>

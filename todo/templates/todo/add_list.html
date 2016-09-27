@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {%  load staticfiles %}
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="{% static 'js/jquery.min.js'%}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <style>
+  body {
+      position: relative;
+  }
+  #section1 {padding-top:50px;color: #F25432; background-color: #9595ff;}
+  #section2 {padding-top:50px;height:500px;color: #F25432; background-color: #F25432;}
+  #section3 {padding-top:50px;height:500px;color: #FFF; background-color: #76F654;}
+  #section4 {padding-top:50px;color: #6e87ff; background-color: #f8f4ff;}
+  img{padding-left: 70%;height: 100px;}
+  #section42 {padding-top:50px;height:500px;color: #fff; background-color: #009688;}
+  </style>
+</head>
+<body>
+<div id="section1" class="container">
+    <form method="post" role="form">{% csrf_token %}
+        <div class="form-group">
+            {{ form.name.errors }}
+            <label for="{{ form.name.id_for_label }}">Name  :</label>
+            {{ form.name }}
+            </div>
+        <div class="form-group">
+            {{ form.created.errors }}
+            {{ form.created.label_tag }}
+            {{ form.created }}
+            </div>
+        <div class="form-group">
+        <input type="submit" value="ADD"/>
+            </div>
+    </form>
+    </div>
+</body>
+</html>

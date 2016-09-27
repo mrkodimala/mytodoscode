@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Angular</title>
+{%  load staticfiles %}
+<script src="{% static 'js/angular.min.js'%}"></script>
+
+</head>
+
+<body>
+<script >
+    var app = angular.module('myApp', []);
+app.config(['$httpProvider', function($httpProvider) {
+    $httpProvider.defaults.headers.common['X-CSRFToken'] = '{{ csrf_token|escapejs }}';
+}]);
+app.controller('customersCtrl', function($scope, $http) {
+    $http.get("/todolist/").then(function (response) {
+        $scope.myData = response.data;
+    });
+    $scope.ShowItem=true;
+    $scope.ItemShow=false;
+    $scope.FormShow=false;
+    $scope.Parent=0;
+    var config = {
+                headers : {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8;'
+                }
+            }
+    $scope.ConvertDatetoMMDDYYYY=function (date)
+    {
+        if (date==null)
+                return;
+        var day=date.getDate();
+        var month=date.getMonth()+1;
+        var year=date.getFullYear();
+        if(day<10)
+        {
+            day='0'+day;
+        }
+        if(month<10)
+        {
+            month='0'+month;
+        }
+        return year+"-"+month+"-"+day;
+    }
+    $scope.AddItems=function () {
+        var name=$scope.todoname;
+        $scope.todoname="";
+        var today=new Date();
+        var date=$scope.ConvertDatetoMMDDYYYY(today);
+        $http({
+            url:"/todolist/",
+            method:'POST',
+            data:{'name':name,'created':date}
+        }).then(function (response) {
+            $scope.myData.push(response.data)
+        })
+    }
+
+    $scope.DeleteItem=function ( x ) {
+        var url='/todolist/'+x;
+        console.log(url);
+        $http({
+           method:'DELETE',
+            url:url
+        }).then(function (response) {
+             $http.get("/todolist/").then(function (response) {
+                 $scope.myData = response.data;
+             });
+        });
+    }
+
+    $scope.Nameclicked=function (x) {
+        $scope.ShowItem=false;
+        $scope.ItemShow=true;
+        var url='/todolistitems/'+x;
+        $scope.Parent=x;
+        $http({
+            method:'GET',
+            url:url
+        }).then(function (response) {
+            $scope.Itemdata=response.data;
+        })
+    }
+
+    $scope.AddNewItem=function () {
+        $scope.ItemShow=false;
+        $scope.FormShow=true;
+    }
+
+    $scope.GoBack=function () {
+        $scope.ShowItem=true;
+        $scope.ItemShow=false;
+    }
+
+    $scope.AddTodoItem=function () {
+        var des=$scope.description;
+        var date=$scope.ConvertDatetoMMDDYYYY($scope.duedate);
+        var completed=$scope.completed;
+        console.log(des+date+completed);
+        if(date==null||des==null||completed==null)
+        {
+            return;
+        }
+        $http({
+            method:'POST',
+            url:'/todolistitems/'+$scope.Parent+"/",
+            data:{'description':des,'duedate':date,'completed':completed}
+        }).then(function (response) {
+            $scope.description=null;
+            $scope.duedate=null;
+            $scope.completed=false;
+             $scope.ItemShow=true;
+            $scope.FormShow=false;
+            $scope.Itemdata=response.data;
+        })
+    }
+    $scope.DeleteListItem=function (x) {
+        var url="/listitem/"+x+"/";
+        $http({
+          method:'DELETE',
+            url:url
+        }).then(function (response) {
+            $http({
+            method:'GET',
+            url:'/todolistitems/'+$scope.Parent+"/"
+        }).then(function (response) {
+            $scope.Itemdata=response.data;
+        })
+        })
+    }
+
+});
+</script>
+{% verbatim %}
+<div ng-app="myApp" ng-controller="customersCtrl">
+    <h1>Todo App</h1>
+    <div ng-show="ShowItem">
+<table>
+    <tr>
+        <td>
+            <form>{{ csrf_token }}
+            <input type="text" ng-model="todoname" placeholder="Add todo item" maxlength="30">
+                </form>
+        </td>
+        <td>
+            <button ng-click="AddItems()">Add</button>
+        </td>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <th>Created On</th>
+    </tr>
+   <tr ng-repeat=" x in myData">
+       <td ng-click="Nameclicked(x.id)">{{ x.name }}</td>
+       <td>{{ x.created }}</td>
+       <td style="color:red" ng-click="DeleteItem(x.id)">X</td>
+  </tr>
+</table></div>
+    <div ng-show="ItemShow">
+        <table>
+            <tr>
+                <th>Description</th>
+                <th>Duedate</th>
+                <th>Completed</th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="x in Itemdata">
+                <td>{{ x.description }}</td>
+                <td>{{ x.duedate }}</td>
+                <td>{{ x.completed }}</td>
+                <td style="color: red" ng-click="DeleteListItem(x.id)">X</td>
+            </tr>
+            <tr>
+                <td><button style="background-color: #2b669a;color: white" ng-click="AddNewItem()">AddNewItem</button></td>
+                <td></td>
+                <td><button style="background-color: #47c67e;color: white" ng-click="GoBack()"><-BACK</button></td>
+            </tr>
+        </table>
+    </div>
+    <div ng-show="FormShow">
+        <form>
+        <p><input type="text" placeholder="Description" ng-model="description" maxlength="30" ng-required="true"></p>
+        <p><input type="date" placeholder="Duedate" ng-model="duedate" ></p>
+        <p><label>Completed</label><input type="checkbox" value="false" ng-model="completed" ></p>
+        <p><input type="submit" style="background-color: #269abc;color: white" ng-click="AddTodoItem()"></p>
+            </form>
+    </div>
+</div>
+{% endverbatim %}
+</body>
+</html>
+

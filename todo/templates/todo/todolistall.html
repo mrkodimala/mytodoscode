@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Todo List all</title>
+    <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+    {%  load staticfiles %}
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+  <script src="{% static 'js/jquery.min.js'%}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <style>
+  body {
+      position: relative;
+  }
+  #section1 {padding-top:50px;color: #F25432; background-color: #9595ff;}
+  #section2 {padding-top:50px;height:500px;color: #F25432; background-color: #F25432;}
+  #section3 {padding-top:50px;height:500px;color: #FFF; background-color: #76F654;}
+  #section4 {padding-top:50px;color: #6e87ff; background-color: #f8f4ff;}
+  img{padding-left: 70%;height: 100px;}
+  #section42 {padding-top:50px;height:500px;color: #fff; background-color: #009688;}
+  </style>
+</head>
+<body>
+    <div id="section1" class="container-fliud">
+    <h1>All Lists</h1>
+      <div align="right"> <a href="/admin/logout"><button type="button" class="btn btn-primary">Logout</button></a></div>
+    </div>
+    <div id="section4">
+    <table class="table table-hover">
+        <tr>
+        <th>Lists</th>
+        <th></th>
+        <th></th>
+        </tr>
+        {% for o in items %}
+            <tr>
+            <td><a href="/todo/todolist/{{ o.id }}">{{ o.name }}</a></td>
+            <td><a href="/todo/todolist/updatelist/{{ o.id }}"><span class="glyphicon glyphicon-refresh"></span></a></td>
+            <td><a href="/todo/todolist/deletelist/{{ o.id }}"><span class="glyphicon glyphicon-remove"></span></a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="/todo/todolist/addlist"><button type="button" class="btn btn-primary">Add New Item</button></a>
+    </div>
+</body>
+</html>
